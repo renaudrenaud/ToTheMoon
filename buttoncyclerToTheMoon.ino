@@ -33,6 +33,7 @@ Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
 boolean oldState = HIGH;
 int     mode     = 0;    // Currently-active animation mode, 0-9
 boolean lightOn;
+boolean ButtonPressed = false; 
 
 void setup() {
   Serial.begin(9600);  // Start serial monitor after a few seconds. Mainly for testing code to get it to work.
@@ -46,32 +47,27 @@ void setup() {
 }
 
 void changeMode() {
-    detachInterrupt(digitalPinToInterrupt(2));  // button is set to interrupt mode
+    detachInterrupt(digitalPinToInterrupt(2));  // button is detached from interrupt mode
     Serial.print("interruption active ");  // Prints "Mode" to serial monitor. Mainly for troubleshooting.
-    Serial.print('\n');  // Prints the speed to the serial monitor. Mainly for troubleshooting.
+    Serial.print('\n');  //  Mainly for troubleshooting.
+    ButtonPressed = true;  // to test within the main function in order to exit
+    Serial.print("Button by ChangeMode");  //  Mainly for troubleshooting.
+    Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
+    Serial.print('\n');  //  Mainly for troubleshooting.
 
- // some LED activity for visual debug
-  if (lightOn) {
-    digitalWrite(LED_BUILTIN, HIGH);
-    lightOn = false;
-  } else {
-    digitalWrite(LED_BUILTIN, LOW);
-    lightOn = true;
-  }
-  
-  
-//  // Get current button state.
-//  boolean newState = digitalRead(BUTTON_PIN);
-//
-//  // Check if state changed from high to low (button press).
-//  if((newState == LOW) && (oldState == HIGH)) {
-//    // Short delay to debounce button.
-//    delay(20);
-//    // Check if button is still low after debounce.
-//    newState = digitalRead(BUTTON_PIN);
-//    if(newState == LOW) {      // Yes, still low
+     // some LED activity for visual debug
+      if (lightOn) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        lightOn = false;
+      } else {
+        digitalWrite(LED_BUILTIN, LOW);
+        lightOn = true;
+      }
+
       // put the lights to Blue to signal that it memorised the change
-      colorWipe(strip.Color(  0,   0,   127), 10);    // blue quick
+      colorWipeUniterrupted(strip.Color(  0,   0,   127), 10);    // blue quick
+      //strip.fill(strip.Color(  0,   0,   127));
+      //delay(500);
       mode = mode + 1 ;
     Serial.print("Mode dans interruption");  // Prints "Mode" to serial monitor. Mainly for troubleshooting.
     Serial.print(mode);
@@ -92,7 +88,6 @@ void loop() {
     Serial.print("Mode dans loop ");  // Prints "Mode" to serial monitor. Mainly for troubleshooting.
     Serial.print(mode);
     Serial.print('\n');  // Prints the speed to the serial monitor. Mainly for troubleshooting.
-    
   switch(mode) {           // Start the new animation...
     
     case 0:
@@ -100,37 +95,47 @@ void loop() {
       break;
     case 1:
       colorWipe(strip.Color(  0,   0,   0), 50);    // Black/off
-      colorWipe(strip.Color(10,   0,   0), 50);    // Red
+      colorWipe(strip.Color( 10,   0,   0), 50);    // Red
       colorWipe(strip.Color(100,   0,   0), 50);    // Red
       colorWipe(strip.Color(255,   0,   0), 50);    // Red
+      colorWipe(strip.Color(100,   0,   0), 50);    // Red
+      colorWipe(strip.Color( 50,   0,   0), 50);    // Red
       break;
     case 2:
-      colorWipe(strip.Color(  180, 100,   0), 50);    // orange
-      colorWipe(strip.Color(  127, 127, 127), 50);    // white
-      colorWipe(strip.Color(  180, 200,   0), 50);    // yellow
-      colorWipe(strip.Color(  180, 100,   0), 50);    // orange
-      colorWipe(strip.Color(  100,   0,   0), 50);    // Red
+      HueIntens(0, 10);          // red Hue
       break;
     case 3:
-      colorWipe(strip.Color(  0,   0,   0), 50);    // Black/off
+      colorWipe(strip.Color(  180, 100,   0), 50);    // orange
       colorWipe(strip.Color(  127, 127, 127), 50);    // white
+      colorWipe(strip.Color(  200, 200,    0), 50);    // yellow
+      colorWipe(strip.Color(  255, 128,   0), 50);    // orange
+      colorWipe(strip.Color(  100,   0,   0), 50);    // Red
       break;
     case 4:
-      theaterChase(strip.Color(127, 127, 127), 50); // White
+      colorWipe(strip.Color(   30,  30,  30), 50);    // white
+      colorWipe(strip.Color(  127, 127, 127), 50);    // white
+      colorWipe(strip.Color(  255, 255, 255), 50);    // 
+      colorWipe(strip.Color(  127, 127, 127), 50);    // 
+      colorWipe(strip.Color(    0,   0,   0), 50);    // black
       break;
     case 5:
-      theaterChase(strip.Color(127,   0,   0), 50); // Red
+      HueIntens(65536/6, 10);    // Yellow Hue
       break;
     case 6:
-      theaterChase(strip.Color(  180, 200, 0), 50); // Yellow
+      theaterChase(strip.Color( 30, 30, 30), 100); // white
       break;
     case 7:
-      rainbow(10);
+      rainbow(20);
       break;
     case 8:
       theaterChaseRainbow(50);
       break;
       }
+     
+      ButtonPressed = false; //
+    Serial.print("Button by loop");  //  Mainly for troubleshooting.
+    Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
+    Serial.print('\n');  //  Mainly for troubleshooting.
 }
 
 // Fill strip pixels one after another with a color. Strip is NOT cleared
@@ -143,9 +148,58 @@ void colorWipe(uint32_t color, int wait) {
     strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
     strip.show();                          //  Update strip to match
     delay(wait);                           //  Pause for a moment
+    if(ButtonPressed) {
+       ButtonPressed=false;
+    Serial.print("Button by colorWipe");  //  Mainly for troubleshooting.
+    Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
+    Serial.print('\n');  //  Mainly for troubleshooting.
+       break;
+       }
   }
 }
 
+void colorFlash(uint32_t color, int wait) {
+  for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
+    strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
+    strip.show();                          //  Update strip to match
+    if(ButtonPressed) {
+       ButtonPressed=false;
+    Serial.print("Button by colorFlash");  //  Mainly for troubleshooting.
+    Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
+    Serial.print('\n');  //  Mainly for troubleshooting.
+       break;
+       }
+  }
+  delay(wait);                           //  Pause for a moment
+}
+
+
+// faire varier l'intensité de la couleur demandée de mini à maxi puis revient à mini
+void HueIntens(int Hue,  int wait) {
+  int x = 1;
+  for(int i = 0; i > -1 ; i = i + x) { // For each level of brightness
+    strip.fill(strip.gamma32(strip.ColorHSV(Hue,127,i)));         
+    strip.show();                          //  Update strip to match
+    if (i == 255) {
+      x = -1;  // switch direction at peak
+    }
+    if(ButtonPressed) {
+       ButtonPressed=false;
+    Serial.print("Button by HueIntens");  //  Mainly for troubleshooting.
+    Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
+    Serial.print('\n');  //  Mainly for troubleshooting.
+       break;
+       }
+  delay(wait);                           //  Pause for a moment
+  }
+}
+void colorWipeUniterrupted(uint32_t color, int wait) {
+  for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
+    strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
+    strip.show();                          //  Update strip to match
+    delay(wait);                           //  Pause for a moment
+  }
+}
 // Theater-marquee-style chasing lights. Pass in a color (32-bit value,
 // a la strip.Color(r,g,b) as mentioned above), and a delay time (in ms)
 // between frames.
@@ -160,6 +214,13 @@ void theaterChase(uint32_t color, int wait) {
       strip.show(); // Update strip with new contents
       delay(wait);  // Pause for a moment
     }
+    if(ButtonPressed) {
+       ButtonPressed=false;
+    Serial.print("Button by theaterChase");  //  Mainly for troubleshooting.
+    Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
+    Serial.print('\n');  //  Mainly for troubleshooting.
+       break;
+       }
   }
 }
 
@@ -183,6 +244,13 @@ void rainbow(int wait) {
       strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
     }
     strip.show(); // Update strip with new contents
+    if(ButtonPressed) {
+      ButtonPressed=false;
+    Serial.print("Button by rainbow");  //  Mainly for troubleshooting.
+    Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
+    Serial.print('\n');  //  Mainly for troubleshooting.
+      break;
+      }
     delay(wait);  // Pause for a moment
   }
 }
@@ -206,5 +274,12 @@ void theaterChaseRainbow(int wait) {
       delay(wait);                 // Pause for a moment
       firstPixelHue += 65536 / 90; // One cycle of color wheel over 90 frames
     }
+    if(ButtonPressed) {
+      ButtonPressed=false;
+    Serial.print("ButtonPressed by theaterChaseRainbow");  //  Mainly for troubleshooting.
+    Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
+    Serial.print('\n');  //  Mainly for troubleshooting.
+      break;
+      }
   }
 }
