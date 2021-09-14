@@ -37,16 +37,19 @@ boolean ButtonPressed = false;
 
 void setup() {
   Serial.begin(9600);  // Start serial monitor after a few seconds. Mainly for testing code to get it to work.
-  attachInterrupt(digitalPinToInterrupt(2), changeMode, LOW);  // button is set to interrupt mode
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   strip.begin(); // Initialize NeoPixel strip object (REQUIRED)
   strip.show();  // Initialize all pixels to 'off'
   lightOn = false;
   pinMode(LED_BUILTIN, OUTPUT);
+  colorWipe(strip.Color( 30,  30,  30), 50);    // white (grey)
+  delay (2000); //tempo before attaching the interrupt
+  attachInterrupt(digitalPinToInterrupt(2), changeMode, LOW);  // button is set to interrupt mode
 
 }
 
 void changeMode() {
+   
     detachInterrupt(digitalPinToInterrupt(2));  // button is detached from interrupt mode
     Serial.print("interruption active ");  // Prints "Mode" to serial monitor. Mainly for troubleshooting.
     Serial.print('\n');  //  Mainly for troubleshooting.
@@ -91,15 +94,15 @@ void loop() {
   switch(mode) {           // Start the new animation...
     
     case 0:
-      colorWipe(strip.Color(  0,   0,   0), 50);    // Black/off
+      colorWipe(strip.Color( 30,  30,  30), 50);    // white (grey)
       break;
     case 1:
-      colorWipe(strip.Color(  0,   0,   0), 50);    // Black/off
-      colorWipe(strip.Color( 10,   0,   0), 50);    // Red
-      colorWipe(strip.Color(100,   0,   0), 50);    // Red
-      colorWipe(strip.Color(255,   0,   0), 50);    // Red
-      colorWipe(strip.Color(100,   0,   0), 50);    // Red
-      colorWipe(strip.Color( 50,   0,   0), 50);    // Red
+      colorWipe(strip.Color(  0,   0,   0), 200);    // Black/off
+      colorWipe(strip.Color( 10,   0,   0), 200);    // Red
+      colorWipe(strip.Color(100,   0,   0), 200);    // Red
+      colorWipe(strip.Color(255,   0,   0), 200);    // Red
+      colorWipe(strip.Color(100,   0,   0), 200);    // Red
+      colorWipe(strip.Color( 50,   0,   0), 200);    // Red
       break;
     case 2:
       HueIntens(0, 10);          // red Hue
@@ -149,7 +152,7 @@ void colorWipe(uint32_t color, int wait) {
     strip.show();                          //  Update strip to match
     delay(wait);                           //  Pause for a moment
     if(ButtonPressed) {
-       ButtonPressed=false;
+     //  ButtonPressed=false;
     Serial.print("Button by colorWipe");  //  Mainly for troubleshooting.
     Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
     Serial.print('\n');  //  Mainly for troubleshooting.
@@ -163,7 +166,7 @@ void colorFlash(uint32_t color, int wait) {
     strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
     strip.show();                          //  Update strip to match
     if(ButtonPressed) {
-       ButtonPressed=false;
+      // ButtonPressed=false;
     Serial.print("Button by colorFlash");  //  Mainly for troubleshooting.
     Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
     Serial.print('\n');  //  Mainly for troubleshooting.
@@ -184,7 +187,7 @@ void HueIntens(int Hue,  int wait) {
       x = -1;  // switch direction at peak
     }
     if(ButtonPressed) {
-       ButtonPressed=false;
+     //  ButtonPressed=false;
     Serial.print("Button by HueIntens");  //  Mainly for troubleshooting.
     Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
     Serial.print('\n');  //  Mainly for troubleshooting.
@@ -215,7 +218,7 @@ void theaterChase(uint32_t color, int wait) {
       delay(wait);  // Pause for a moment
     }
     if(ButtonPressed) {
-       ButtonPressed=false;
+     //  ButtonPressed=false;
     Serial.print("Button by theaterChase");  //  Mainly for troubleshooting.
     Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
     Serial.print('\n');  //  Mainly for troubleshooting.
@@ -245,7 +248,7 @@ void rainbow(int wait) {
     }
     strip.show(); // Update strip with new contents
     if(ButtonPressed) {
-      ButtonPressed=false;
+    //  ButtonPressed=false;
     Serial.print("Button by rainbow");  //  Mainly for troubleshooting.
     Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
     Serial.print('\n');  //  Mainly for troubleshooting.
@@ -275,7 +278,7 @@ void theaterChaseRainbow(int wait) {
       firstPixelHue += 65536 / 90; // One cycle of color wheel over 90 frames
     }
     if(ButtonPressed) {
-      ButtonPressed=false;
+    //  ButtonPressed=false;
     Serial.print("ButtonPressed by theaterChaseRainbow");  //  Mainly for troubleshooting.
     Serial.print(ButtonPressed);  //  Mainly for troubleshooting.
     Serial.print('\n');  //  Mainly for troubleshooting.
