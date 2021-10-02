@@ -125,7 +125,7 @@ void loop() {
       HueIntens(65536/6, 10);    // Yellow Hue
       break;
     case 6:
-      theaterChase(strip.Color( 30, 30, 30), 100); // white
+      colorWipe(strip.Color(  0,   0,   0), 200);    // Black/off  
       break;
     case 7:
       rainbow(20);
