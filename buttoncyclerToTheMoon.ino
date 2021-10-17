@@ -42,9 +42,10 @@ void setup() {
   strip.show();  // Initialize all pixels to 'off'
   lightOn = false;
   pinMode(LED_BUILTIN, OUTPUT);
-  colorWipe(strip.Color( 30,  30,  30), 50);    // white (grey)
+  colorWipe(strip.Color( 0,  0,  0), 50);    // black to start
   delay (2000); //tempo before attaching the interrupt
   attachInterrupt(digitalPinToInterrupt(2), changeMode, LOW);  // button is set to interrupt mode
+  digitalWrite(LED_BUILTIN, HIGH);
 
 }
 
@@ -94,7 +95,7 @@ void loop() {
   switch(mode) {           // Start the new animation...
     
     case 0:
-      colorWipe(strip.Color( 30,  30,  30), 50);    // white (grey)
+      colorWipe(strip.Color( 0,  0,  0), 50);    // black
       break;
     case 1:
       colorWipe(strip.Color(  0,   0,   0), 200);    // Black/off
@@ -125,7 +126,7 @@ void loop() {
       HueIntens(65536/6, 10);    // Yellow Hue
       break;
     case 6:
-      colorWipe(strip.Color(  0,   0,   0), 200);    // Black/off  
+      colorWipe(strip.Color(  30,   30,   30), 200);    // white 
       break;
     case 7:
       rainbow(20);
