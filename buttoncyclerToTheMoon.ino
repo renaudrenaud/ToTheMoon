@@ -36,6 +36,7 @@ boolean lightOn;
 boolean ButtonPressed = false; 
 
 void setup() {
+  digitalWrite(LED_BUILTIN, HIGH);
   Serial.begin(9600);  // Start serial monitor after a few seconds. Mainly for testing code to get it to work.
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   strip.begin(); // Initialize NeoPixel strip object (REQUIRED)
@@ -45,7 +46,7 @@ void setup() {
   colorWipe(strip.Color( 0,  0,  0), 50);    // black to start
   delay (2000); //tempo before attaching the interrupt
   attachInterrupt(digitalPinToInterrupt(2), changeMode, LOW);  // button is set to interrupt mode
-  digitalWrite(LED_BUILTIN, HIGH);
+  digitalWrite(LED_BUILTIN, LOW);
 
 }
 
@@ -60,13 +61,13 @@ void changeMode() {
     Serial.print('\n');  //  Mainly for troubleshooting.
 
      // some LED activity for visual debug
-      if (lightOn) {
-        digitalWrite(LED_BUILTIN, HIGH);
-        lightOn = false;
-      } else {
-        digitalWrite(LED_BUILTIN, LOW);
-        lightOn = true;
-      }
+      // if (lightOn) {
+      //   digitalWrite(LED_BUILTIN, HIGH);
+      //  lightOn = false;
+      //} else {
+      //  digitalWrite(LED_BUILTIN, LOW);
+      //  lightOn = true;
+      // }
 
       // put the lights to Blue to signal that it memorised the change
       colorWipeUniterrupted(strip.Color(  0,   0,   127), 10);    // blue quick
@@ -96,8 +97,10 @@ void loop() {
     
     case 0:
       colorWipe(strip.Color( 0,  0,  0), 50);    // black
+      digitalWrite(LED_BUILTIN, LOW);
       break;
     case 1:
+      digitalWrite(LED_BUILTIN, HIGH);
       colorWipe(strip.Color(  0,   0,   0), 200);    // Black/off
       colorWipe(strip.Color( 10,   0,   0), 200);    // Red
       colorWipe(strip.Color(100,   0,   0), 200);    // Red
